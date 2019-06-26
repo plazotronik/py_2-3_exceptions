@@ -16,41 +16,17 @@
 # и тд.
 
 
-# def prefix_notation():
-#     operator = input('Введите арифметический оператор (+ - * /): ')
-#     operand_1 = int(input('Введите первый операнд: '))
-#     operand_2 = int(input('Введите второй операнд: '))
-#     int(operand_1)
-#     int(operand_2)
-#     # result = operand_1 + operator + operand_2
-#     # print(result)
-#     print(operand_1, operator, operand_2, sep='')
-#     print(4+1)
-#     print(operator)
-#     print(type(operator))
-#     print('================================')
-#     print(operand_1)
-#     print(type(operand_1))
-#     print('================================')
-#     print(operand_2)
-#     print(type(operand_2))
-#     print('================================')
+def summ(a, b):
+    return int(a) + int(b)
 
-try:
-    def summ(a, b):
-        return int(a) + int(b)
+def sub(a, b):
+    return int(a) - int(b)
 
-    def sub(a, b):
-        return int(a) - int(b)
+def mul(a, b):
+    return int(a) * int(b)
 
-    def mul(a, b):
-        return int(a) * int(b)
-
-    def div(a, b):
-        return int(a) / int(b)
-except ValueError as err:
-    print('Неверный ввод. Обратите внимание на то, что Вы вводите.\n'
-          'Детально: ', err)
+def div(a, b):
+    return int(a) / int(b)
 
 func = {'+':summ, '-':sub, '*':mul, '/':div}
 oper = ['+', '-', '*', '/']
@@ -58,44 +34,27 @@ result = None
 
 def prefix_notation():
     try:
-        a, b, c = input('Введите оператор и операнды через пробел (напр., + 1 2): ').split()
+        a, b, c = input('\nВведите оператор и операнды через пробел (напр., + 1 2): ').split()
+        assert a in oper, f'"{a}" не является арифметическим оператором :))))'
     except ValueError as err:
         print('\nНеверный ввод. Обратите внимание на то, что Вы вводите.\n'
-              'Детально: ', err)
+              'Детально:', err)
+    except AssertionError as err:
+        print('\nНеверный ввод. Обратите внимание на то, что Вы ввели вместо оператора.\n'
+              'Детально:', err)
     else:
         try:
-            if a in oper:
-                result = func[a](b,c).__round__(2)
-                print(f'\nВ итоге выражение "{a} {b} {c}" дало "{result}".'
-                      f'\nВ привычном виде это выглядит так: {b} {a} {c} = {result}')
+            result = func[a](b,c).__round__()
+            print(f'\nИТОГ: выражение " {a} {b} {c} " дало в результате " {result} ".'
+                  f'\nВ привычном для человека виде (infix) это выглядит так: {b} {a} {c} = {result}')
         except ZeroDivisionError as err:
-            print('Плохая идея делить на 0 :))\n'
+            print('\nПлохая идея делить на 0 :))\n'
                   'Детально: ', err)
         except ValueError as err:
-            print('Неверный ввод. Обратите внимание на то, что Вы вводите.\n'
-                  'Детально: ', err)
-        except UnboundLocalError as err:
-            print('Неверный ввод. Обратите внимание на то, что Вы вводите.\n'
-                  'Скорее всего недостаточно аргументов.\n'
-                  'Детально: ', err)
-    # elif:
-    # print(a)
-    # print(b)
-    # print(c)
-    # print(result)
-    # return x
+            print('\nНеверный ввод. Обратите внимание на то, что Вы вводите.\n'
+                  'Детально:', err)
 
-
-prefix_notation()
-
-
-
-
-
-
-
-
-
+# prefix_notation()
 
 def very_main():
     print('\n\nДобро пожаловать в мини-реализацию Польской нотации!'.upper())
@@ -107,10 +66,6 @@ def very_main():
                          '\n\n  номер действия: '.upper()))
         if prog == '1':
             prefix_notation()
-        # elif prog == '2':
-        #     list_documents(documents)
-        # elif prog == '3':
-        #     number_shelf(directories)
         elif prog == '0':
             print('\n   Надеемся Вам очень понравилась наша программа!',
                   '\n   Вопросы и предложения присылайте по адресу: info@it-vi.ru',
@@ -120,5 +75,5 @@ def very_main():
             print('\nТакой функционал программы пока не подвезли)))'
                   '\nЕсть предложения? Пишите по адресу: info@it-vi.ru')
 
-# if __name__ == '__main__':
-#     very_main()
+if __name__ == '__main__':
+    very_main()
