@@ -317,7 +317,6 @@ def very_main():
             add_shelf(directories)
         elif prog == '8':
             view_all_docs_and_dirs(documents, directories)
-        # elif prog == 'x' or prog == 'X' or prog == 'x.' or prog == 'х':
         elif prog in ['x', 'X', 'x.', 'X.', 'х', 'Х', 'х.', 'Х.']:
             catch_exception(documents)
         elif prog == '9':
