@@ -1,13 +1,17 @@
 documents = [
     {"type": "passport", "number": "2207 876234", "name": "Василий Гупкин"},
     {"type": "invoice", "number": "11-2", "name": "Геннадий Покемонов"},
-    {"type": "insurance", "number": "10006", "name": "Аристарх Павлов"}
+    {"type": "draft", "number": "13-7-4"},
+    {"type": "The Book Of Heavy Metal", "number": "N-666"},
+    {"type": "insurance", "number": "10006", "name": "Аристарх Павлов"},
 ]
 
 directories = {
     '1': ['2207 876234', '11-2'],
     '2': ['10006'],
     '3': [],
+    '13': ['13-7-4'],
+    '666': ['N-666']
 }
 
 # TODO 1
@@ -83,7 +87,10 @@ def owner_documents(docs):
     if num_doc in lst:
         for doc in docs:
             if num_doc in doc['number']:
-                print('\nВладельцем документа №"{}" является {}'.format(num_doc, doc['name']))
+                try:
+                    print('\nВладельцем документа №"{}" является {}'.format(num_doc, doc['name']))
+                except KeyError:
+                    print('\nУ документа №"{}" отсутствует владелец'.format(num_doc))
     else:
         print(f'\nДокумента под номером "{num_doc}" не существует. Проверьте правильность ввода и повторите попытку.')
 
@@ -100,8 +107,10 @@ def list_documents(docs):
     """
     print('\nНа текущий момент на наших полках присутствуют документы:\n')
     for doc in docs:
-        print('{}{} "{}" "{}";'.format(' ' * 3, doc['type'], doc['number'], doc['name']))
-        # print(f"""{doc['type']} "{doc['number']}" "{doc['name']}";""")
+        try:
+            print('{}{} "{}" "{}";'.format(' ' * 3, doc['type'], doc['number'], doc['name']))
+        except KeyError:
+            print('{}{} "{}" "НЕТ ВЛАДЕЛЬЦА";'.format(' ' * 3, doc['type'], doc['number']))
 
 # list_documents(documents)
 
@@ -113,7 +122,7 @@ def number_shelf(dirs):
     :return:
     print number shelf
     """
-    num_doc = str(input('\nВведите полный номер документа: '))
+    num_doc = str(input('\nВведите номер документа: '))
     list_num_doc = []
     for dir in dirs.items():
         for num in dir[1]:
@@ -197,8 +206,8 @@ def move_document(dirs):
             else:
                 continue
     else:
-        print(f'\nДокумента под номером "{num_doc}" не существует. '
-                  f'Проверьте правильность ввода и повторите попытку.')
+        print(f'\nДокумента под номером "{num_doc}" нет на полках. '
+                  'Проверьте правильность ввода и повторите попытку.')
 
 # move_document(directories)
 # print(directories)
@@ -236,8 +245,12 @@ def view_all_docs_and_dirs(docs, dirs):
 
     """
     print('\nНа текущий момент на наших полках присутствуют документы:\n')
+
     for index, doc in enumerate(docs):
-        print('{}{} Тип: {}, №"{}", владелец {};'.format(' ' * 3, index+1, doc['type'], doc['number'], doc['name']))
+        try:
+            print('{}{} Тип: {}, №"{}", владелец {};'.format(' ' * 3, index+1, doc['type'], doc['number'], doc['name']))
+        except KeyError:
+            print('{}{} Тип: {}, №"{}", владелец НЕТ ВЛАДЕЛЬЦА;'.format(' ' * 3, index+1, doc['type'], doc['number']))
     print('\nРасположение документов:\n')
     for dir in dirs:
         content = str(dirs[dir])
@@ -253,20 +266,21 @@ def view_all_docs_and_dirs(docs, dirs):
 #  выводящей имена всех владельцев документов. С помощью исключения KeyError проверяйте, если поле "name" у документа.
 
 def catch_exception(docs):
-    # list_name_owner = []
-    # for doc in docs:
-    #     list_name_owner.append(doc['name'])
-    # print(f'\nИмена всех владельцев всех документов:'
-    #       f'\n   {list_name_owner}')
-    print(f'\nИмена всех владельцев всех документов:')
-    try:
-        for doc in docs:
-            print(f'   * {doc["name"]}')
-    except KeyError as err:
-        print('\nПлохая идея делить на 0 :))\n'
-              'Детально: ', err)
+    """
+    Show name all owners.
 
-catch_exception(documents)
+    :param docs:
+    :return:
+    """
+    print(f'\n\nИмена всех владельцев всех документов:\n')
+    for doc in docs:
+        try:
+            print(f'   * {doc["name"]}')
+        except KeyError:
+            print(f'   * {"Неверное заведение документа".upper()} № "{doc["number"]}". '
+                  'Необходимо добавить поле "name": "НЕТ ВЛАДЕЛЬЦА"')
+
+# catch_exception(documents)
 
 def very_main():
     print('\n\nДобро пожаловать в мини программу секретаря Noname!'.upper())
@@ -281,6 +295,7 @@ def very_main():
           '\n   6. спросит номер документа и целевую полку и переместит его с текущей полки на целевую;'
           '\n   7. спросит номер новой полки и добавит ее в перечень;'
           '\n   8. выводит все документы и содержимое всех полок;'
+          '\n   X. NEW! выводит имена всех владельцев всех документов'
           '\n   9. вывод этой справки;'
           '\n\n   0. Выйти из программы.')
     while True:
@@ -302,6 +317,9 @@ def very_main():
             add_shelf(directories)
         elif prog == '8':
             view_all_docs_and_dirs(documents, directories)
+        # elif prog == 'x' or prog == 'X' or prog == 'x.' or prog == 'х':
+        elif prog in ['x', 'X', 'x.', 'X.', 'х', 'Х', 'х.', 'Х.']:
+            catch_exception(documents)
         elif prog == '9':
             print('\nДля удобства и простоты Вам достаточно ввести номер действия, '
                   'чтобы программа выполнила нужное действие: '
@@ -314,9 +332,10 @@ def very_main():
                   '\n   6. спросит номер документа и целевую полку и переместит его с текущей полки на целевую;'
                   '\n   7. спросит номер новой полки и добавит ее в перечень;'
                   '\n   8. выводит все документы и содержимое всех полок;'
+                  '\n   x. NEW! выводит имена всех владельцев всех документов'
                   '\n   9. вывод этой справки;'
                   '\n\n   0. Выйти из программы.')
-        elif prog == '0':
+        elif prog in ['0', 'o', 'O']:
             print('\n   Надеемся Вам очень понравилась наша программа!',
                   '\n   Вопросы и предложения присылайте по адресу: info@it-vi.ru',
                   '\n   Досвидания!'.upper())
@@ -325,6 +344,6 @@ def very_main():
             print('\nТакой функционал программы пока не подвезли)))'
                   '\nЕсть предложения? Пишите по адресу: info@it-vi.ru')
 
-# if __name__ == '__main__':
-#     very_main()
-#
+if __name__ == '__main__':
+    very_main()
+
